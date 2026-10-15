@@ -58,6 +58,46 @@ flowchart LR
 | [`docqa/api.py`](docqa/api.py) | FastAPI app: `/ask`, `/documents`, `/health` and the web UI. |
 | [`docqa/evaluate.py`](docqa/evaluate.py) | Retrieval metrics (offline) and answer grading (live). |
 
+## Project structure
+
+```text
+docqa/
+├── docqa/                    # Application package
+│   ├── __init__.py           # Package version
+│   ├── api.py                # FastAPI app: /ask, /documents, /health, web UI
+│   ├── chunking.py           # Paragraph-aligned chunking with overlap
+│   ├── cli.py                # `docqa` command: ingest | ask | eval | serve
+│   ├── config.py             # Settings from environment variables
+│   ├── evaluate.py           # Retrieval metrics and answer grading
+│   ├── ingest.py             # Load → chunk → index pipeline
+│   ├── llm.py                # Claude request with citations, response parsing
+│   ├── loaders.py            # Text extraction for .md, .txt and .pdf
+│   ├── retriever.py          # BM25 index with JSON persistence
+│   └── static/
+│       └── index.html        # Single-page web UI
+├── tests/                    # Offline test suite (fake Claude client)
+│   ├── test_api.py
+│   ├── test_chunking.py
+│   ├── test_evaluate.py      # Retrieval quality gate
+│   ├── test_llm.py
+│   └── test_retriever.py
+├── eval/
+│   └── cases.jsonl           # 18 labelled questions (16 answerable, 2 not)
+├── sample_docs/              # Demo documents for a fictional company
+│   ├── employee-handbook.md
+│   ├── onboarding-guide.md
+│   └── security-policy.md
+├── .github/workflows/
+│   └── ci.yml                # Lint, tests, eval gate, Docker build + smoke test
+├── Dockerfile                # Non-root image with healthcheck
+├── .dockerignore
+├── .env.example              # Configuration template
+├── .gitignore
+├── LICENSE                   # MIT
+├── pyproject.toml            # Dependencies, `docqa` entry point, ruff and pytest config
+└── README.md
+```
+
 ## Quickstart
 
 ```bash
