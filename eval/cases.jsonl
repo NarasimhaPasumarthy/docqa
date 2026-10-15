@@ -1,0 +1,18 @@
+{"question": "How many PTO days do employees get per year?", "expected_source": "employee-handbook.md", "expected_keywords": ["25"]}
+{"question": "How many unused vacation days can I carry over to next year?", "expected_source": "employee-handbook.md", "expected_keywords": ["5"]}
+{"question": "What is the daily meal allowance when traveling?", "expected_source": "employee-handbook.md", "expected_keywords": ["75"]}
+{"question": "How long is paid parental leave for a primary caregiver?", "expected_source": "employee-handbook.md", "expected_keywords": ["16 weeks"]}
+{"question": "What is the annual learning budget?", "expected_source": "employee-handbook.md", "expected_keywords": ["1,500"]}
+{"question": "How many days a week can I work remotely?", "expected_source": "employee-handbook.md", "expected_keywords": ["3"]}
+{"question": "When do I need a doctor's note for sick leave?", "expected_source": "employee-handbook.md", "expected_keywords": ["3"]}
+{"question": "What is the minimum password length?", "expected_source": "security-policy.md", "expected_keywords": ["14"]}
+{"question": "How quickly must I report a security incident?", "expected_source": "security-policy.md", "expected_keywords": ["1 hour"]}
+{"question": "What are the data classification levels?", "expected_source": "security-policy.md", "expected_keywords": ["Restricted"]}
+{"question": "After how many minutes should my laptop screen lock?", "expected_source": "security-policy.md", "expected_keywords": ["5 minutes"]}
+{"question": "What should I do if my laptop is stolen?", "expected_source": "security-policy.md", "expected_keywords": ["4 hours"]}
+{"question": "Where do I pick up my laptop on my first day?", "expected_source": "onboarding-guide.md", "expected_keywords": ["Building B"]}
+{"question": "When must new hires finish security training?", "expected_source": "onboarding-guide.md", "expected_keywords": ["day 3"]}
+{"question": "When is payday?", "expected_source": "onboarding-guide.md", "expected_keywords": ["last business day"]}
+{"question": "What is the IT helpdesk extension?", "expected_source": "onboarding-guide.md", "expected_keywords": ["4357"]}
+{"question": "What is the company's stock ticker symbol?", "expected_source": null, "expected_keywords": []}
+{"question": "Does Acme offer pet insurance?", "expected_source": null, "expected_keywords": []}

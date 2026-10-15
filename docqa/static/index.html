@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocQA</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6b66;
+    --border: #e3e2dd; --accent: #2f5bd3; --accent-text: #ffffff; --quote: #f1f0eb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161615; --panel: #1f1f1d; --text: #ecebe6; --muted: #9c9b95;
+      --border: #33332f; --accent: #7b9cf5; --accent-text: #10131c; --quote: #2a2a27;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px; margin-bottom: 16px;
+  }
+  form { display: flex; gap: 8px; }
+  input[type=text] {
+    flex: 1; min-width: 0; padding: 10px 12px; font: inherit; color: var(--text);
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  }
+  button {
+    padding: 10px 16px; font: inherit; font-weight: 600; border: 0; border-radius: 8px;
+    background: var(--accent); color: var(--accent-text); cursor: pointer;
+  }
+  button:disabled { opacity: .55; cursor: default; }
+  .answer { white-space: pre-wrap; }
+  .meta { color: var(--muted); font-size: 13px; margin-top: 10px; }
+  ol.cites { padding-left: 22px; margin: 14px 0 0; }
+  ol.cites li { margin-bottom: 10px; }
+  .src { font-weight: 600; font-size: 13px; }
+  blockquote {
+    margin: 4px 0 0; padding: 8px 10px; background: var(--quote);
+    border-radius: 6px; font-size: 14px;
+  }
+  .docs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip {
+    font-size: 13px; padding: 3px 9px; border: 1px solid var(--border);
+    border-radius: 999px; color: var(--muted);
+  }
+  .error { color: #c2410c; }
+  label.upload { font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>DocQA</h1>
+  <p class="sub">Ask a question about your company's documents. Every answer cites its sources.</p>
+
+  <section class="panel">
+    <form id="ask">
+      <input id="q" type="text" placeholder="How many vacation days do I get?" autocomplete="off" required>
+      <button id="go">Ask</button>
+    </form>
+    <div id="out"></div>
+  </section>
+
+  <section class="panel">
+    <label class="upload">Add documents (.md, .txt, .pdf):
+      <input id="files" type="file" multiple accept=".md,.markdown,.txt,.pdf">
+    </label>
+    <div class="docs" id="docs"></div>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+
+async function loadDocs() {
+  const res = await fetch("/documents");
+  const docs = await res.json();
+  const names = Object.keys(docs);
+  $("docs").innerHTML = names.length
+    ? names.map((n) => `<span class="chip">${esc(n)} · ${docs[n]} chunks</span>`).join("")
+    : '<span class="chip">No documents indexed yet</span>';
+}
+
+$("ask").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("go").disabled = true;
+  $("out").innerHTML = '<p class="meta">Thinking…</p>';
+  try {
+    const res = await fetch("/ask", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({question: $("q").value}),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || res.statusText);
+    const cites = data.citations.map((c) =>
+      `<li><span class="src">${esc(c.source)}</span><blockquote>${esc(c.quote)}</blockquote></li>`).join("");
+    $("out").innerHTML =
+      `<p class="answer">${esc(data.answer)}</p>` +
+      (cites ? `<ol class="cites">${cites}</ol>` : "") +
+      `<p class="meta">${data.model ?? "no model call"} · ${data.latency_ms} ms · ${data.retrieved.length} passages retrieved</p>`;
+  } catch (err) {
+    $("out").innerHTML = `<p class="error">${esc(String(err.message || err))}</p>`;
+  } finally {
+    $("go").disabled = false;
+  }
+});
+
+$("files").addEventListener("change", async () => {
+  const body = new FormData();
+  for (const f of $("files").files) body.append("files", f);
+  const res = await fetch("/documents", {method: "POST", body});
+  if (!res.ok) alert((await res.json()).detail);
+  $("files").value = "";
+  loadDocs();
+});
+
+loadDocs();
+</script>
+</body>
+</html>
