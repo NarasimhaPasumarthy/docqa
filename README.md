@@ -1,5 +1,9 @@
 # DocQA
 
+[![CI](https://github.com/NarasimhaPasumarthy/docqa/actions/workflows/ci.yml/badge.svg)](https://github.com/NarasimhaPasumarthy/docqa/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
+
 **Ask questions about your company's documents. Get short answers that cite the exact passages they came from.**
 
 New hires and support teams spend hours searching handbooks, policies and wikis. DocQA indexes
@@ -57,7 +61,7 @@ flowchart LR
 ## Quickstart
 
 ```bash
-git clone https://github.com/<you>/docqa && cd docqa
+git clone https://github.com/NarasimhaPasumarthy/docqa && cd docqa
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 
